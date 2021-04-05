@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CX265",
+        "repositoryURL": "https://github.com/kojirou1994/CX265.git",
+        "state": {
+          "branch": "main",
+          "revision": "bb63ac6bd8a71b205e3051cc4483c9e80274bb47",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
