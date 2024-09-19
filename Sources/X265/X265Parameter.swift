@@ -1,7 +1,7 @@
 import CX265
 
 @dynamicMemberLookup
-public final class X265Parameter: CustomStringConvertible {
+public struct X265Parameter: ~Copyable {
   internal let ptr: UnsafeMutablePointer<x265_param>
   internal let api: X265API
 
@@ -16,7 +16,7 @@ public final class X265Parameter: CustomStringConvertible {
     get {
       ptr.pointee[keyPath: member]
     }
-    set {
+    nonmutating set {
       ptr.pointee[keyPath: member] = newValue
     }
   }
@@ -30,7 +30,7 @@ public final class X265Parameter: CustomStringConvertible {
     case badValue
   }
 
-  public func parse(name: String, value: String) throws {
+  public func parse(name: UnsafePointer<CChar>, value: UnsafePointer<CChar>) throws {
     let r = api.ptr.pointee.param_parse(ptr, name, value)
     switch r {
     case X265_PARAM_BAD_NAME:
@@ -42,7 +42,7 @@ public final class X265Parameter: CustomStringConvertible {
     }
   }
 
-  public func parseZone(name: String, value: String) throws {
+  public func parseZone(name: UnsafePointer<CChar>, value: UnsafePointer<CChar>) throws {
     let r = api.ptr.pointee.zone_param_parse(ptr, name, value)
     switch r {
     case X265_PARAM_BAD_NAME:
@@ -54,7 +54,7 @@ public final class X265Parameter: CustomStringConvertible {
     }
   }
 
-  public func apply(profile: String) -> Bool {
+  public func apply(profile: UnsafePointer<CChar>) -> Bool {
     api.ptr.pointee.param_apply_profile(ptr, profile) == 0
   }
 

@@ -3,7 +3,7 @@ import X265
 
 final class X265Tests: XCTestCase {
   func testX265API() throws {
-    let api = try X265API(bitDepth: 8)
+    let api = try XCTUnwrap(X265API(bitDepth: 8))
     XCTAssertEqual(api.api_build_number, X265_BUILD)
 
     let param = try api.newParameter()
@@ -12,11 +12,11 @@ final class X265Tests: XCTestCase {
     param.sourceWidth = 1920
     param.sourceHeight = 1080
     
-    print(param)
+    print(param.description)
 
     let encoder = try api.newEncoder(parameter: param)
 
-    let stats = encoder.stats
+    let stats = try encoder.stats()
     print(stats)
     stats.update()
     print(stats)

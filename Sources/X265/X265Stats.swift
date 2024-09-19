@@ -6,7 +6,10 @@ public final class X265Stats: CustomStringConvertible {
   var stats: x265_stats
   let encoder: X265Encoder
 
-  internal init(encoder: X265Encoder) {
+  internal init(encoder: X265Encoder) throws {
+    guard encoder.api.sizeof_stats == MemoryLayout<x265_stats>.size else {
+      fatalError("x265_stats size mismatch!")
+    }
     stats = .init()
     self.encoder = encoder
     update()

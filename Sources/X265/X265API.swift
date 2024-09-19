@@ -1,11 +1,14 @@
 import CX265
 
 @dynamicMemberLookup
-public final class X265API {
+public struct X265API: @unchecked Sendable {
   let ptr: UnsafePointer<x265_api>
 
-  public init(bitDepth: Int32) throws {
-    ptr = .init(swift_x265_api_get(bitDepth)!)
+  public init?(bitDepth: Int32) {
+    guard let v = swift_x265_api_get(bitDepth) else {
+      return nil
+    }
+    self.ptr = .init(v)
   }
 
   public subscript<T: FixedWidthInteger>(dynamicMember member: KeyPath<x265_api, T>) -> T {
@@ -22,7 +25,7 @@ public final class X265API {
     .init(cString: ptr.pointee.build_info_str)
   }
 
-  public func newEncoder(parameter: X265Parameter) throws -> X265Encoder {
+  public func newEncoder(parameter: borrowing X265Parameter) throws -> X265Encoder {
     .init(ptr: ptr.pointee.encoder_open(parameter.ptr)!,
           api: self)
   }
@@ -31,7 +34,7 @@ public final class X265API {
     .init(ptr: ptr.pointee.param_alloc()!, api: self)
   }
   
-  public func newPicture(parameter: X265Parameter) throws -> X265Picture {
+  public func newPicture(parameter: borrowing X265Parameter) throws -> X265Picture {
     let pic = ptr.pointee.picture_alloc()!
     ptr.pointee.picture_init(parameter.ptr, pic)
     return .init(ptr: pic, api: self)
@@ -45,15 +48,15 @@ public final class X265API {
   //
   //  public var get_ref_frame_list: (@convention(c) (OpaquePointer?, UnsafeMutablePointer<OpaquePointer?>?, UnsafeMutablePointer<OpaquePointer?>?, Int32, Int32, UnsafeMutablePointer<Int32>?, UnsafeMutablePointer<Int32>?) -> Int32)!
 
-  public func csvlogOpen(param: X265Parameter) -> UnsafeMutablePointer<FILE> {
+  public func csvlogOpen(param: borrowing X265Parameter) -> UnsafeMutablePointer<FILE> {
     ptr.pointee.csvlog_open(param.ptr)!
   }
 
-  public func csvlogFrame(param: X265Parameter, picture: X265Picture) {
+  public func csvlogFrame(param: borrowing X265Parameter, picture: X265Picture) {
     ptr.pointee.csvlog_frame(param.ptr, picture.ptr)
   }
 
-  public func csvlogEncode(param: X265Parameter, stats: X265Stats,
+  public func csvlogEncode(param: borrowing X265Parameter, stats: X265Stats,
                            padx: Int32, pady: Int32, argc: Int32, argv: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>) {
     ptr.pointee.csvlog_encode(param.ptr, nil, padx, pady, argc, argv)
   }

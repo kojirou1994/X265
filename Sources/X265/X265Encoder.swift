@@ -11,11 +11,11 @@ public final class X265Encoder {
   internal let ptr: OpaquePointer
   internal let api: X265API
 
-  func copyParam(to dst: X265Parameter) {
+  func copyParam(to dst: borrowing X265Parameter) {
     api.ptr.pointee.encoder_parameters(ptr, dst.ptr)
   }
 
-  func reconfig(param: X265Parameter) -> Bool {
+  func reconfig(param: borrowing X265Parameter) -> Bool {
     api.ptr.pointee.encoder_reconfig(ptr, param.ptr) == 0
   }
 
@@ -39,8 +39,8 @@ public final class X265Encoder {
     api.ptr.pointee.encoder_encode(ptr, ppNal, piNal, picIn.ptr, picOut.ptr) >= 0
   }
 
-  public var stats: X265Stats {
-    .init(encoder: self)
+  public func stats() throws -> X265Stats {
+    try .init(encoder: self)
   }
 
   public func log(argc: Int32, argv: UnsafeMutablePointer<UnsafeMutablePointer<Int8>?>?) {
